@@ -17,7 +17,7 @@ A Python application that collects weather data from the Ambient Weather API and
 - ✅ **Phase 3**: Data Collection Service - Complete (Realtime WebSocket API)
 - ✅ **Phase 4**: Backup System - Complete
 - ✅ **Phase 5**: Docker Container - Complete
-- ⏳ **Phase 6**: Grafana Integration - Pending
+- ✅ **Phase 6**: Grafana Integration - Complete
 
 ## Quick Start
 
@@ -257,11 +257,26 @@ backup:
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed backup setup instructions.
 
-## Next Steps
+## Grafana Dashboards
 
-- **Phase 6**: Setup Grafana dashboards for data visualization
+The system includes Grafana for data visualization:
 
-See [TODO.md](TODO.md) for detailed implementation plan.
+- **Access**: http://your-server-ip:3000
+- **Pre-built Dashboard**: Weather Station Dashboard with 10 panels
+- **Real-time Updates**: Auto-refresh every 1 minute
+- **Panels Include**:
+  - Temperature trends (outdoor, indoor, feels like, dew point)
+  - Humidity levels
+  - Barometric pressure
+  - Wind speed, gusts, and direction
+  - Rainfall accumulation
+  - Solar radiation and UV index
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete Grafana setup and customization instructions.
+
+## Project Complete
+
+All planned phases are now complete! See [TODO.md](TODO.md) for the full implementation checklist.
 
 ## API Reference
 

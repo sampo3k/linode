@@ -73,30 +73,47 @@ A Docker container that collects data from Ambient Weather API and stores it in 
   - [x] Volume mounting for data persistence
   - [x] Full Linode VPS deployment guide
 
-### Phase 6: Grafana Integration Prep
-- [ ] Document database schema for Grafana
-- [ ] Create example Grafana queries
-- [ ] Test SQLite data source plugin compatibility
-- [ ] (Optional) Consider adding Grafana to docker-compose
+### Phase 6: Grafana Integration ✓ COMPLETED
+- [x] Add Grafana service to docker-compose.yml
+- [x] Install SQLite data source plugin (frser-sqlite-datasource)
+- [x] Configure data source provisioning
+- [x] Create pre-built Weather Station Dashboard with 10 panels:
+  - [x] Current temperature, humidity, wind speed gauges
+  - [x] Temperature trends (outdoor, indoor, feels like, dew point)
+  - [x] Humidity (indoor/outdoor)
+  - [x] Barometric pressure
+  - [x] Rainfall accumulation
+  - [x] Wind data (speed, gusts, direction)
+  - [x] Solar radiation and UV index
+- [x] Document Grafana setup and usage in DEPLOYMENT.md
+- [x] Deploy to production (Linode VPS)
+- [x] Verify SQLite plugin installation
+- [x] Test dashboard with live data
 
-### Phase 7: Documentation & Testing
-- [ ] Write README.md
-  - [ ] Installation instructions
-  - [ ] Configuration guide
-  - [ ] API setup instructions
-  - [ ] Backup configuration
-- [ ] Add example configuration files
-- [ ] Create troubleshooting guide
-- [ ] End-to-end testing
+### Phase 7: Documentation & Testing ✓ MOSTLY COMPLETED
+- [x] Write README.md
+  - [x] Installation instructions
+  - [x] Configuration guide
+  - [x] API setup instructions
+  - [x] Backup configuration
+  - [x] Grafana setup
+- [x] Add example configuration files (config.example.yaml)
+- [x] Create troubleshooting guide (in DEPLOYMENT.md)
+- [x] End-to-end testing (tested on production Linode VPS)
 
 ## Technical Decisions Made
 
-- [x] Language/runtime: **Python** (chosen for excellent library support)
-- [x] Database: **SQLite** (simple, file-based, perfect for single-device data)
-- [x] Backup storage: **Backblaze B2** (S3-compatible, cost-effective)
-- [ ] Backup timing (specific time of day?)
-- [ ] Data retention policy
-- [ ] Monitoring/alerting for failures
+- [x] Language/runtime: **Python 3.11** (chosen for excellent library support)
+- [x] Database: **SQLite** with WAL mode (simple, file-based, perfect for single-device data)
+- [x] Backup storage: **Backblaze B2** (S3-compatible, cost-effective, 10GB free tier)
+- [x] Backup timing: **Daily at 2:00 AM** (Pacific Time)
+- [x] Data retention policy: **Tiered retention**
+  - Keep all daily backups for last 45 days
+  - Keep one backup per month forever (older than 45 days)
+- [x] Data collection: **Realtime WebSocket API** (once per minute updates)
+- [x] Deployment: **Docker** with docker-compose (3 containers: collector, backup scheduler, Grafana)
+- [x] Visualization: **Grafana** with SQLite data source plugin
+- [x] Monitoring: Health checks on containers, auto-restart on failure
 
 ## API Fields to Store
 

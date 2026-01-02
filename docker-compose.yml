@@ -96,3 +96,45 @@ services:
         reservations:
           cpus: '0.05'
           memory: 32M
+
+  # Grafana dashboard for weather data visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: weather-grafana
+    restart: unless-stopped
+    # Run as host user to access database files
+    user: "1000:1000"
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount database directory so Grafana can access SQLite
+      # Note: SQLite needs write access to directory for temp files
+      - ./data:/var/lib/weather-data
+      # Grafana data persistence
+      - grafana-data:/var/lib/grafana
+      # Provisioning configs
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - TZ=America/Los_Angeles
+      # Install SQLite data source plugin on startup
+      - GF_INSTALL_PLUGINS=frser-sqlite-datasource
+      # Anonymous access (optional - disable for production)
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      # Admin credentials (change these!)
+      - GF_SECURITY_ADMIN_USER=nate
+      - GF_SECURITY_ADMIN_PASSWORD=haydencamille123
+      # Fix permissions for user 1000
+      - GF_PATHS_DATA=/var/lib/grafana
+      - GF_PATHS_LOGS=/var/log/grafana
+      - GF_PATHS_PLUGINS=/var/lib/grafana/plugins
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+
+volumes:
+  grafana-data:

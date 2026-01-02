@@ -565,13 +565,240 @@ docker-compose logs backup-scheduler | grep ERROR
 - Check logs for cleanup messages
 - Manually list backups to verify dates
 
+## Setting Up Grafana Dashboards (Phase 6)
+
+Grafana is included in the Docker setup to visualize your weather data with interactive dashboards.
+
+### Accessing Grafana
+
+Once deployed, Grafana is accessible at:
+
+**URL**: `http://your-linode-ip:3000` or `http://farad.space:3000`
+
+**Default Login**:
+- Username: `nate` (or whatever you set in `GF_SECURITY_ADMIN_USER`)
+- Password: `haydencamille123` (or whatever you set in `GF_SECURITY_ADMIN_PASSWORD`)
+
+**Important**: Change the default password after first login!
+
+### What's Included
+
+The deployment automatically provisions:
+
+1. **SQLite Data Source**: Connected to your weather database
+2. **Weather Station Dashboard**: Pre-built dashboard with 10 panels
+
+### Dashboard Panels
+
+The Weather Station Dashboard includes:
+
+1. **Current Temperature** - Gauge showing latest outdoor temperature
+2. **Current Humidity** - Gauge showing outdoor humidity
+3. **Wind Speed** - Current wind speed gauge
+4. **Temperature Trends** - Line graph with:
+   - Outdoor temperature
+   - Indoor temperature
+   - Feels like temperature
+   - Dew point
+5. **Humidity** - Dual-axis showing indoor/outdoor humidity
+6. **Barometric Pressure** - Relative and absolute pressure trends
+7. **Rainfall (Hourly)** - Bar chart of hourly rain accumulation
+8. **Wind** - Wind speed, gusts, and direction over time
+9. **Solar Radiation & UV Index** - Solar and UV data
+
+**Default Settings**:
+- Time range: Last 24 hours
+- Auto-refresh: Every 1 minute
+- Timezone: America/Los_Angeles
+
+### Managing Grafana
+
+**View Grafana logs**:
+```bash
+docker compose logs -f grafana
+```
+
+**Restart Grafana**:
+```bash
+docker compose restart grafana
+```
+
+**Access Grafana shell** (for troubleshooting):
+```bash
+docker exec -it weather-grafana /bin/bash
+```
+
+### Customizing Dashboards
+
+**To edit panels**:
+1. Click on panel title → Edit
+2. Modify query, visualization, or settings
+3. Click Apply to save changes
+
+**To create new dashboards**:
+1. Click "+" icon → Dashboard
+2. Add Panel → Select "Weather SQLite" data source
+3. Write SQL queries against `weather_measurements` table
+
+**Example queries**:
+
+```sql
+-- Temperature over time
+SELECT timestamp, temp_outdoor
+FROM weather_measurements
+WHERE timestamp >= datetime('now', '-24 hours')
+ORDER BY timestamp
+
+-- Daily temperature averages
+SELECT
+  DATE(timestamp) as day,
+  AVG(temp_outdoor) as avg_temp,
+  MIN(temp_outdoor) as min_temp,
+  MAX(temp_outdoor) as max_temp
+FROM weather_measurements
+WHERE timestamp >= datetime('now', '-7 days')
+GROUP BY day
+ORDER BY day
+
+-- Current conditions
+SELECT
+  temp_outdoor,
+  humidity_outdoor,
+  wind_speed,
+  pressure_relative
+FROM weather_measurements
+ORDER BY timestamp DESC
+LIMIT 1
+```
+
+### Firewall Configuration
+
+If accessing Grafana remotely, ensure port 3000 is open:
+
+```bash
+# Using ufw
+sudo ufw allow 3000/tcp
+
+# Check firewall status
+sudo ufw status
+```
+
+**For production**, consider:
+- Setting up HTTPS with reverse proxy (nginx/caddy)
+- Using a subdomain (e.g., grafana.yourdomain.com)
+- Restricting access by IP address
+
+### Security Best Practices
+
+1. **Change default password**:
+   - Go to profile icon → Preferences → Change Password
+
+2. **Disable anonymous access** (already done):
+   ```yaml
+   - GF_AUTH_ANONYMOUS_ENABLED=false
+   ```
+
+3. **Use environment-specific passwords**:
+   - Edit docker-compose.yml
+   - Update `GF_SECURITY_ADMIN_PASSWORD`
+   - Restart: `docker compose up -d`
+
+4. **Set up HTTPS**:
+   - Use a reverse proxy (nginx, caddy, traefik)
+   - Obtain SSL certificate (Let's Encrypt)
+   - Forward HTTPS to Grafana port 3000
+
+### Troubleshooting Grafana
+
+**Grafana won't start**:
+```bash
+# Check container status
+docker compose ps grafana
+
+# View logs
+docker compose logs grafana | tail -50
+
+# Check for permission errors on provisioning files
+ls -la grafana/provisioning/
+```
+
+**Data source not working**:
+```bash
+# Verify database is accessible
+docker exec weather-grafana ls -la /var/lib/weather-data/weather.db
+
+# Check data source configuration
+docker exec weather-grafana cat /etc/grafana/provisioning/datasources/sqlite.yaml
+
+# Test SQLite connection from container
+docker exec weather-grafana sqlite3 /var/lib/weather-data/weather.db "SELECT COUNT(*) FROM weather_measurements;"
+```
+
+**Dashboard not showing data**:
+- Verify you have weather data collected: `docker exec weather-logger sqlite3 /app/data/weather.db "SELECT COUNT(*) FROM weather_measurements;"`
+- Check time range (default is last 24 hours)
+- Verify SQLite plugin is installed: Check logs for "frser-sqlite-datasource"
+- Try running queries manually in Grafana's Explore view
+
+**Plugin installation failed**:
+```bash
+# Check if plugin is installed
+docker exec weather-grafana ls /var/lib/grafana/plugins/
+
+# Manually install plugin
+docker exec weather-grafana grafana-cli plugins install frser-sqlite-datasource
+
+# Restart Grafana
+docker compose restart grafana
+```
+
+### Grafana Storage
+
+Grafana data is persisted in a Docker volume:
+
+```bash
+# List volumes
+docker volume ls | grep grafana
+
+# Inspect volume
+docker volume inspect weather-logger_grafana-data
+
+# Backup Grafana data
+docker run --rm -v weather-logger_grafana-data:/data -v $(pwd):/backup alpine tar czf /backup/grafana-backup.tar.gz -C /data .
+
+# Restore Grafana data
+docker run --rm -v weather-logger_grafana-data:/data -v $(pwd):/backup alpine tar xzf /backup/grafana-backup.tar.gz -C /data
+```
+
+### Updating Grafana
+
+To update to the latest Grafana version:
+
+```bash
+# Pull latest image
+docker compose pull grafana
+
+# Restart with new image
+docker compose up -d grafana
+
+# Verify new version
+docker compose logs grafana | grep "Starting Grafana"
+```
+
+### Additional Resources
+
+- [Grafana Documentation](https://grafana.com/docs/grafana/latest/)
+- [SQLite Data Source Plugin](https://github.com/fr-ser/grafana-sqlite-datasource)
+- [Dashboard Best Practices](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/best-practices/)
+
 ## Next Steps
 
 After deployment:
 1. Let the collector run for a few hours to build up data
 2. Configure automated backups to B2 (see above)
-3. Set up Grafana for visualization (Phase 6)
-4. Configure monitoring/alerting
+3. Access Grafana dashboards at http://your-server:3000
+4. Customize dashboards and set up alerts as needed
+5. Configure monitoring/alerting for the services
 
 ## Support
 

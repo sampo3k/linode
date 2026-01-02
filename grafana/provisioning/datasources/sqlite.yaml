@@ -1,0 +1,11 @@
+apiVersion: 1
+
+datasources:
+  - name: Weather SQLite
+    type: frser-sqlite-datasource
+    access: proxy
+    isDefault: true
+    editable: true
+    jsonData:
+      path: /var/lib/weather-data/weather.db
+    version: 1
