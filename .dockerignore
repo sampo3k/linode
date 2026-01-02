@@ -1,0 +1,62 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+dist
+build
+
+# Virtual environments
+venv
+env
+ENV
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data and logs (will be mounted as volumes)
+data/
+logs/
+*.db
+*.db-shm
+*.db-wal
+
+# Config (will be mounted as volume)
+config.yaml
+
+# Documentation
+README.md
+TODO.md
+USAGE.md
+
+# Tests
+tests/
+*.pytest_cache
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# CI/CD
+.github
+
+# Claude
+.claude
+
+# Test scripts
+test_setup.py

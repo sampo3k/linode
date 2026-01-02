@@ -1,0 +1,59 @@
+# Example configuration for Weather Logger
+# Copy this file to config.yaml and fill in your actual values
+
+ambient_weather:
+  # Your Ambient Weather API key (get from https://ambientweather.net/account)
+  api_key: "YOUR_API_KEY_HERE"
+
+  # Your Ambient Weather Application key (get from https://ambientweather.net/account)
+  application_key: "YOUR_APPLICATION_KEY_HERE"
+
+  # MAC address of your weather station device
+  # Format: XX:XX:XX:XX:XX:XX or XXXXXXXXXXXX
+  mac_address: "YOUR_DEVICE_MAC_ADDRESS"
+
+  # How often to poll the API (in seconds, minimum 60)
+  poll_interval: 60
+
+database:
+  # Path to SQLite database file
+  path: "data/weather.db"
+
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: "INFO"
+
+  # Path to log file
+  file: "logs/weather_logger.log"
+
+  # Log message format
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+backup:
+  # Enable or disable backups
+  enabled: false
+
+  # S3-compatible storage bucket name
+  bucket_name: "your-bucket-name"
+
+  # Backblaze B2 endpoint (or leave empty for AWS S3)
+  # B2: https://s3.us-west-002.backblazeb2.com
+  endpoint_url: ""
+
+  # S3/B2 credentials
+  access_key_id: "YOUR_ACCESS_KEY"
+  secret_access_key: "YOUR_SECRET_KEY"
+
+  # Backup file prefix in bucket
+  prefix: "weather-backups/"
+
+  # Tiered retention policy:
+  # - Keep all daily backups for the last 45 days
+  # - Keep one backup per month for backups older than 45 days (forever)
+  daily_retention_days: 45
+
+  # Legacy setting (ignored when using tiered retention)
+  retention_days: 30
+
+  # Backup schedule (cron format: "0 2 * * *" = daily at 2am)
+  schedule: "0 2 * * *"

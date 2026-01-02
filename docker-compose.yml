@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  weather-logger:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: weather-logger:latest
+    container_name: weather-logger
+    restart: unless-stopped
+
+    # Mount configuration and data directories
+    volumes:
+      # Configuration file (read-only)
+      - ./config.yaml:/app/config.yaml:ro
+
+      # Database directory (persistent)
+      - ./data:/app/data
+
+      # Logs directory (persistent)
+      - ./logs:/app/logs
+
+    # Environment variables (optional, config.yaml takes precedence)
+    environment:
+      # Uncomment and set these if you prefer env vars over config.yaml
+      # - WEATHER_LOGGER_AMBIENT_WEATHER_API_KEY=${API_KEY}
+      # - WEATHER_LOGGER_AMBIENT_WEATHER_APPLICATION_KEY=${APP_KEY}
+      # - WEATHER_LOGGER_AMBIENT_WEATHER_MAC_ADDRESS=${MAC_ADDRESS}
+      # - WEATHER_LOGGER_DATABASE_PATH=/app/data/weather.db
+      # - WEATHER_LOGGER_LOGGING_LEVEL=INFO
+      - TZ=America/Los_Angeles
+
+    # Resource limits (optional)
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "sqlite3", "/app/data/weather.db", "SELECT COUNT(*) FROM weather_measurements;"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Optional: Run the polling collector instead of realtime
+  # Uncomment this service and comment out weather-logger above
+  # weather-logger-polling:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   image: weather-logger:latest
+  #   container_name: weather-logger-polling
+  #   restart: unless-stopped
+  #   command: ["python3", "collector.py"]
+  #   volumes:
+  #     - ./config.yaml:/app/config.yaml:ro
+  #     - ./data:/app/data
+  #     - ./logs:/app/logs
+  #   environment:
+  #     - TZ=America/Los_Angeles
+
+  # Automated backup scheduler
+  # Daily backups to B2/S3 with tiered retention policy
+  backup-scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: weather-logger:latest
+    container_name: weather-backup-scheduler
+    restart: unless-stopped
+    command: ["python3", "backup_scheduler.py"]
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - TZ=America/Los_Angeles
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 128M
+        reservations:
+          cpus: '0.05'
+          memory: 32M
