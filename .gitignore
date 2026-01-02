@@ -227,6 +227,7 @@ hugo-site/*
 !hugo-site/Dockerfile
 !hugo-site/Dockerfile.dev
 !hugo-site/nginx.conf
+!hugo-site/robots.txt.example
 !hugo-site/.gitkeep
 
 house-manual/*
@@ -234,6 +235,7 @@ house-manual/*
 !house-manual/nginx.conf
 !house-manual/.htpasswd
 !house-manual/.htpasswd.example
+!house-manual/robots.txt.example
 !house-manual/.gitkeep
 
 # Pre-built Hugo sites (rsync'd from local machine)

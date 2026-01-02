@@ -1,0 +1,9 @@
+# robots.txt for Private House Manual
+# Place this file in the static/ directory of your house-manual-content repository
+# Path: ../house-manual-content/static/robots.txt
+
+# Block ALL bots since this is a private, password-protected site
+# Even though it's behind HTTP basic auth, this provides an additional layer
+
+User-agent: *
+Disallow: /

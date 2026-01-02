@@ -1,0 +1,94 @@
+# robots.txt for Public Blog
+# Place this file in the static/ directory of your blog-content repository
+# Path: ../blog-content/static/robots.txt
+
+# Allow traditional search engines to index your content
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Allow Anthropic (Claude) bots
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Block other AI scrapers and training bots
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: Omgilibot
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+User-agent: Timpibot
+Disallow: /
+
+User-agent: Kangaroo Bot
+Disallow: /
+
+User-agent: YouBot
+Disallow: /
+
+User-agent: Ai2Bot
+Disallow: /
+
+User-agent: Scrapy
+Disallow: /
+
+User-agent: ImagesiftBot
+Disallow: /
+
+User-agent: Img2Dataset
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+# Default for all other bots (allow traditional crawlers, block others)
+User-agent: *
+Allow: /
+
+# Sitemap (optional - Hugo can generate this)
+# Sitemap: https://yourdomain.com/sitemap.xml

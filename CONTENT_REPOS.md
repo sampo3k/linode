@@ -78,6 +78,50 @@ EOF
 # Create first post
 hugo new posts/my-first-post.md
 
+# Create robots.txt to control AI scraping
+mkdir -p static
+cat > static/robots.txt << 'EOF'
+# Allow traditional search engines, block AI scrapers (except Anthropic)
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: *
+Allow: /
+EOF
+
 # Create .gitignore
 cat > .gitignore << 'EOF'
 # Hugo build artifacts
@@ -147,6 +191,14 @@ hugo new docs/appliances.md
 hugo new docs/hvac.md
 hugo new docs/plumbing.md
 hugo new docs/electrical.md
+
+# Create robots.txt to block all bots (private site)
+mkdir -p static
+cat > static/robots.txt << 'EOF'
+# Block all bots - this is a private, password-protected site
+User-agent: *
+Disallow: /
+EOF
 
 # Create password file
 htpasswd -c .htpasswd yourusername
@@ -358,6 +410,90 @@ Thumbs.db
 ✅ **Easier Collaboration**: Can share blog content repo without exposing infrastructure
 ✅ **Independent Updates**: Update blog without touching infrastructure
 ✅ **Reusable Infrastructure**: Could host multiple blogs with same setup
+
+## robots.txt Configuration
+
+Example robots.txt files are provided in the infrastructure repo at:
+- `hugo-site/robots.txt.example` - For public blog
+- `house-manual/robots.txt.example` - For private house manual
+
+### Public Blog robots.txt
+
+Copy the example to your blog content repository:
+
+```bash
+cd ~/projects/blog-content
+cp ../linode/hugo-site/robots.txt.example static/robots.txt
+```
+
+The public blog robots.txt:
+- ✅ **Allows** traditional search engines (Google, Bing, DuckDuckGo)
+- ✅ **Allows** Anthropic (ClaudeBot, Anthropic-AI)
+- ❌ **Blocks** AI training scrapers (GPTBot, ChatGPT, Google-Extended, CCBot, etc.)
+- ❌ **Blocks** social media bots (FacebookBot, Bytespider)
+- ❌ **Blocks** data scraping bots (Scrapy, Diffbot, etc.)
+
+### Private House Manual robots.txt
+
+Copy the example to your house manual repository:
+
+```bash
+cd ~/projects/house-manual-content
+cp ../linode/house-manual/robots.txt.example static/robots.txt
+```
+
+The house manual robots.txt blocks **all bots** since it's a private, password-protected site.
+
+### Hugo Static File Handling
+
+Files in the `static/` directory are copied to the root of your published site:
+- `static/robots.txt` → `public/robots.txt` → `https://yourdomain.com/robots.txt`
+- `static/favicon.ico` → `public/favicon.ico` → `https://yourdomain.com/favicon.ico`
+
+### Updating robots.txt
+
+To update the robots.txt policy:
+
+```bash
+# Edit in your content repo
+cd ~/projects/blog-content
+nano static/robots.txt
+
+# Commit changes
+git add static/robots.txt
+git commit -m "Update robots.txt to block new AI scrapers"
+git push
+
+# Rebuild and redeploy (on server or locally)
+cd ~/projects/linode
+docker-compose build static-site
+docker-compose up -d static-site
+```
+
+### Testing robots.txt
+
+After deployment, verify it's accessible:
+
+```bash
+curl http://yourdomain.com/robots.txt
+curl http://your-server-ip:8080/robots.txt
+```
+
+### Common AI Scrapers Blocked
+
+The public blog robots.txt blocks these AI training bots:
+- **GPTBot, ChatGPT-User** - OpenAI's web crawler
+- **Google-Extended** - Google's AI training crawler (separate from Googlebot)
+- **CCBot** - Common Crawl (used for AI training datasets)
+- **FacebookBot** - Meta's crawler for AI training
+- **PerplexityBot** - Perplexity AI
+- **Bytespider** - ByteDance/TikTok crawler
+- **Amazonbot** - Amazon's crawler
+- **Cohere-AI** - Cohere AI crawler
+- **Diffbot** - Data extraction service
+- **ImagesiftBot, Img2Dataset** - Image scraping for AI training
+
+**Note**: Anthropic bots (ClaudeBot, Anthropic-AI) are **allowed** by default but can be blocked if desired.
 
 ## Troubleshooting
 
