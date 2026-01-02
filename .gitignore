@@ -213,3 +213,29 @@ logs/
 *.db
 *.db-shm
 *.db-wal
+
+# SSL Certificates (sensitive)
+certs/
+*.pem
+*.key
+*.crt
+
+# Hugo static site infrastructure directories
+# Content lives in separate repos (built locally and rsync'd)
+# Only Dockerfiles and nginx configs are tracked here
+hugo-site/*
+!hugo-site/Dockerfile
+!hugo-site/Dockerfile.dev
+!hugo-site/nginx.conf
+!hugo-site/.gitkeep
+
+house-manual/*
+!house-manual/Dockerfile
+!house-manual/nginx.conf
+!house-manual/.htpasswd
+!house-manual/.htpasswd.example
+!house-manual/.gitkeep
+
+# Pre-built Hugo sites (rsync'd from local machine)
+public-blog/
+public-house-manual/

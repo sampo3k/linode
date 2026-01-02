@@ -1,0 +1,20 @@
+# Hugo Site Infrastructure
+
+This directory contains only the serving infrastructure (Dockerfile, nginx config).
+
+**The actual Hugo content lives in a separate git repository.**
+
+## Setup
+
+See `../CONTENT_REPOS.md` for instructions on:
+1. Creating a separate `blog-content` repository
+2. Structuring your Hugo site content
+3. Deploying to Linode
+
+## Files in this directory
+
+- `Dockerfile` - Multi-stage build (Hugo → nginx)
+- `nginx.conf` - Web server configuration
+- `.gitkeep` - This file (keeps directory in git)
+
+Everything else (content/, themes/, config.toml, etc.) goes in the separate `blog-content` repo.

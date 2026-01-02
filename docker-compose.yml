@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   weather-logger:
     build:
-      context: .
+      context: ./weather-logger
       dockerfile: Dockerfile
     image: weather-logger:latest
     container_name: weather-logger
@@ -59,7 +57,7 @@ services:
   # Uncomment this service and comment out weather-logger above
   # weather-logger-polling:
   #   build:
-  #     context: .
+  #     context: ./weather-logger
   #     dockerfile: Dockerfile
   #   image: weather-logger:latest
   #   container_name: weather-logger-polling
@@ -76,7 +74,7 @@ services:
   # Daily backups to B2/S3 with tiered retention policy
   backup-scheduler:
     build:
-      context: .
+      context: ./weather-logger
       dockerfile: Dockerfile
     image: weather-logger:latest
     container_name: weather-backup-scheduler
@@ -135,6 +133,67 @@ services:
         reservations:
           cpus: '0.1'
           memory: 64M
+
+  # Public Hugo blog with nginx (proxied through Cloudflare)
+  # Content is built locally on macOS and rsync'd to ./public-blog directory
+  static-site:
+    build:
+      context: ./hugo-site  # Dockerfile location in this repo
+    image: static-site:latest
+    container_name: static-site
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - TZ=America/Los_Angeles
+    volumes:
+      # Mount pre-built Hugo site (rsync'd from local machine)
+      - ./public-blog:/usr/share/nginx/html:ro
+      # Mount SSL certificates (Cloudflare origin or Let's Encrypt)
+      - ./certs:/etc/nginx/certs:ro
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 128M
+        reservations:
+          cpus: '0.05'
+          memory: 32M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Private house manual with basic auth (not proxied through Cloudflare)
+  # Content is built locally on macOS and rsync'd to ./public-house-manual directory
+  house-manual:
+    build:
+      context: ./house-manual  # Dockerfile location in this repo
+    image: house-manual:latest
+    container_name: house-manual
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - TZ=America/Los_Angeles
+    volumes:
+      # Mount pre-built Hugo site (rsync'd from local machine)
+      - ./public-house-manual:/usr/share/nginx/html:ro
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 64M
+        reservations:
+          cpus: '0.05'
+          memory: 32M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   grafana-data:

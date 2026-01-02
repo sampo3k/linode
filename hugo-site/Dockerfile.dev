@@ -1,0 +1,17 @@
+# Development Dockerfile - mounts content as volume for live updates
+# This is OPTIONAL - only use if you want live updates without rebuilding
+
+FROM hugomods/hugo:latest
+
+WORKDIR /src
+
+# Copy only static config files
+COPY config.* ./
+
+# The content/, themes/, etc. will be mounted as volumes
+# See docker-compose.yml for volume mounts
+
+EXPOSE 1313
+
+# Run Hugo server (development mode with drafts)
+CMD ["hugo", "server", "--bind", "0.0.0.0", "--buildDrafts"]

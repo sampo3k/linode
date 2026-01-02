@@ -1,0 +1,27 @@
+# House Manual Infrastructure
+
+This directory contains only the serving infrastructure (Dockerfile, nginx config, password file).
+
+**The actual Hugo content lives in a separate git repository.**
+
+## Setup
+
+See `../CONTENT_REPOS.md` for instructions on:
+1. Creating a separate `house-manual-content` repository
+2. Setting up password protection with .htpasswd
+3. Structuring your house manual content
+4. Deploying to Linode
+
+## Files in this directory
+
+- `Dockerfile` - Multi-stage build (Hugo → nginx with basic auth)
+- `nginx.conf` - Web server config (port 8080 with auth)
+- `.htpasswd.example` - Example password file format
+- `.gitkeep` - This file (keeps directory in git)
+
+Everything else (content/, themes/, config.toml, .htpasswd, etc.) goes in the separate `house-manual-content` repo.
+
+## Important
+
+The `.htpasswd` file with actual passwords should live in the `house-manual-content` repo, NOT here.
+Make sure to add `.htpasswd` to `.gitignore` in your content repo!
