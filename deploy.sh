@@ -1,6 +1,6 @@
 #!/bin/bash
-# Deploy Hugo sites from macOS to Linode server
-# Usage: ./deploy.sh [blog|manual|all]
+# Deploy Hugo sites and Grafana dashboards from macOS to Linode server
+# Usage: ./deploy.sh [blog|manual|grafana|all]
 
 set -e
 
@@ -106,6 +106,37 @@ deploy_manual() {
     rsync_to_server "$MANUAL_CONTENT_DIR/public" "$REMOTE_DIR/public-house-manual" "House Manual"
 }
 
+deploy_grafana() {
+    echo ""
+    echo "=== Deploying Grafana Dashboards ==="
+
+    local local_grafana_dir="grafana/provisioning"
+
+    if [ ! -d "$local_grafana_dir" ]; then
+        warn "Grafana provisioning directory not found: $local_grafana_dir"
+        return 1
+    fi
+
+    info "Deploying Grafana provisioning files..."
+
+    # Create remote directory if it doesn't exist
+    ssh "$LINODE_HOST" "mkdir -p ~/weather-logger/grafana/provisioning"
+
+    # Rsync Grafana provisioning directory
+    rsync -avz --delete \
+        --exclude='.DS_Store' \
+        "$local_grafana_dir/" \
+        "$LINODE_HOST:~/weather-logger/grafana/provisioning/"
+
+    success "Grafana provisioning files deployed"
+
+    # Restart Grafana container
+    info "Restarting Grafana container..."
+    ssh "$LINODE_HOST" "docker restart weather-grafana" > /dev/null 2>&1
+
+    success "Grafana container restarted"
+}
+
 # Parse arguments
 DEPLOY_TARGET="${1:-all}"
 
@@ -137,13 +168,17 @@ case "$DEPLOY_TARGET" in
     manual)
         deploy_manual
         ;;
+    grafana)
+        deploy_grafana
+        ;;
     all)
         deploy_blog
         deploy_manual
+        deploy_grafana
         ;;
     *)
         warn "Invalid argument: $DEPLOY_TARGET"
-        echo "Usage: $0 [blog|manual|all]"
+        echo "Usage: $0 [blog|manual|grafana|all]"
         exit 1
         ;;
 esac
@@ -151,9 +186,17 @@ esac
 echo ""
 success "Deployment complete!"
 echo ""
-echo "Your sites are now live:"
-echo "  Blog: http://$(echo $LINODE_HOST | cut -d@ -f2)/"
-echo "  Manual: http://$(echo $LINODE_HOST | cut -d@ -f2):8080/"
+
+# Show which services were deployed
+if [ "$DEPLOY_TARGET" = "blog" ] || [ "$DEPLOY_TARGET" = "all" ]; then
+    echo "  Blog: http://$(echo $LINODE_HOST | cut -d@ -f2)/"
+fi
+if [ "$DEPLOY_TARGET" = "manual" ] || [ "$DEPLOY_TARGET" = "all" ]; then
+    echo "  Manual: http://$(echo $LINODE_HOST | cut -d@ -f2):8080/"
+fi
+if [ "$DEPLOY_TARGET" = "grafana" ] || [ "$DEPLOY_TARGET" = "all" ]; then
+    echo "  Grafana: http://$(echo $LINODE_HOST | cut -d@ -f2):3000/"
+fi
 echo ""
 
 # Optional: Cloudflare cache purge reminder

@@ -521,9 +521,9 @@
       "targets": [
         {
           "datasource": "Weather SQLite",
-          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, temp_outdoor as 'Outdoor', temp_indoor as 'Indoor', dew_point as 'Dew Point' FROM weather_measurements WHERE timestamp >= datetime('now', '-24 hours') ORDER BY time",
+          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, temp_outdoor as 'Outdoor', temp_indoor as 'Indoor', dew_point as 'Dew Point' FROM weather_measurements ORDER BY time",
           "queryType": "table",
-          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, temp_outdoor as 'Outdoor', temp_indoor as 'Indoor', dew_point as 'Dew Point' FROM weather_measurements WHERE timestamp >= datetime('now', '-24 hours') ORDER BY time",
+          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, temp_outdoor as 'Outdoor', temp_indoor as 'Indoor', dew_point as 'Dew Point' FROM weather_measurements ORDER BY time",
           "refId": "A",
           "timeColumns": [
             "time"
@@ -617,9 +617,9 @@
       "targets": [
         {
           "datasource": "Weather SQLite",
-          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, humidity_outdoor as 'Outdoor', humidity_indoor as 'Indoor' FROM weather_measurements WHERE timestamp >= datetime('now', '-24 hours') ORDER BY time",
+          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, humidity_outdoor as 'Outdoor', humidity_indoor as 'Indoor' FROM weather_measurements ORDER BY time",
           "queryType": "table",
-          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, humidity_outdoor as 'Outdoor', humidity_indoor as 'Indoor' FROM weather_measurements WHERE timestamp >= datetime('now', '-24 hours') ORDER BY time",
+          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, humidity_outdoor as 'Outdoor', humidity_indoor as 'Indoor' FROM weather_measurements ORDER BY time",
           "refId": "A",
           "timeColumns": [
             "time"
@@ -711,9 +711,9 @@
       "targets": [
         {
           "datasource": "Weather SQLite",
-          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, pressure_relative as 'Relative', pressure_absolute as 'Absolute' FROM weather_measurements WHERE timestamp >= datetime('now', '-24 hours') ORDER BY time",
+          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, pressure_relative as 'Relative', pressure_absolute as 'Absolute' FROM weather_measurements ORDER BY time",
           "queryType": "table",
-          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, pressure_relative as 'Relative', pressure_absolute as 'Absolute' FROM weather_measurements WHERE timestamp >= datetime('now', '-24 hours') ORDER BY time",
+          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, pressure_relative as 'Relative', pressure_absolute as 'Absolute' FROM weather_measurements ORDER BY time",
           "refId": "A",
           "timeColumns": [
             "time"
@@ -884,9 +884,9 @@
       "targets": [
         {
           "datasource": "Weather SQLite",
-          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, daily_rain as 'Daily Total', weekly_rain as 'Weekly Total', monthly_rain as 'Monthly Total' FROM weather_measurements WHERE timestamp >= datetime('now', '-24 hours') ORDER BY time",
+          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, daily_rain as 'Daily Total', weekly_rain as 'Weekly Total', monthly_rain as 'Monthly Total' FROM weather_measurements ORDER BY time",
           "queryType": "table",
-          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, daily_rain as 'Daily Total', weekly_rain as 'Weekly Total', monthly_rain as 'Monthly Total' FROM weather_measurements WHERE timestamp >= datetime('now', '-24 hours') ORDER BY time",
+          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, daily_rain as 'Daily Total', weekly_rain as 'Weekly Total', monthly_rain as 'Monthly Total' FROM weather_measurements ORDER BY time",
           "refId": "A",
           "timeColumns": [
             "time"
@@ -963,6 +963,17 @@
               {
                 "id": "custom.axisPlacement",
                 "value": "left"
+              },
+              {
+                "id": "custom.drawStyle",
+                "value": "bars"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
               }
             ]
           },
@@ -981,35 +992,15 @@
                 "value": "left"
               },
               {
+                "id": "custom.drawStyle",
+                "value": "points"
+              },
+              {
                 "id": "color",
                 "value": {
                   "fixedColor": "red",
                   "mode": "fixed"
                 }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Wind Direction (\u00b0)"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "degree"
-              },
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "max",
-                "value": 360
-              },
-              {
-                "id": "min",
-                "value": 0
               }
             ]
           }
@@ -1043,9 +1034,9 @@
       "targets": [
         {
           "datasource": "Weather SQLite",
-          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, wind_speed as 'Wind Speed (mph)', wind_gust as 'Wind Gust (mph)', wind_direction as 'Wind Direction (\u00b0)' FROM weather_measurements WHERE timestamp >= datetime('now', '-24 hours') ORDER BY time",
+          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, wind_speed as 'Wind Speed (mph)', wind_gust as 'Wind Gust (mph)' FROM weather_measurements ORDER BY time",
           "queryType": "table",
-          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, wind_speed as 'Wind Speed (mph)', wind_gust as 'Wind Gust (mph)', wind_direction as 'Wind Direction (\u00b0)' FROM weather_measurements WHERE timestamp >= datetime('now', '-24 hours') ORDER BY time",
+          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, wind_speed as 'Wind Speed (mph)', wind_gust as 'Wind Gust (mph)' FROM weather_measurements ORDER BY time",
           "refId": "A",
           "timeColumns": [
             "time"
@@ -1181,9 +1172,9 @@
       "targets": [
         {
           "datasource": "Weather SQLite",
-          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, solar_radiation as 'Solar Radiation (W/m\u00b2)', uv_index as 'UV Index' FROM weather_measurements WHERE timestamp >= datetime('now', '-24 hours') ORDER BY time",
+          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, solar_radiation as 'Solar Radiation (W/m\u00b2)', uv_index as 'UV Index' FROM weather_measurements ORDER BY time",
           "queryType": "table",
-          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, solar_radiation as 'Solar Radiation (W/m\u00b2)', uv_index as 'UV Index' FROM weather_measurements WHERE timestamp >= datetime('now', '-24 hours') ORDER BY time",
+          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, solar_radiation as 'Solar Radiation (W/m\u00b2)', uv_index as 'UV Index' FROM weather_measurements ORDER BY time",
           "refId": "A",
           "timeColumns": [
             "time"

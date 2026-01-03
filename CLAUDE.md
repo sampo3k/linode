@@ -215,6 +215,51 @@ python3 backup.py
 python3 backup_scheduler.py
 ```
 
+### Deployment to Linode Server
+
+The `deploy.sh` script automates deployment of Hugo sites and Grafana dashboards to the Linode server.
+
+**Usage:**
+```bash
+# Deploy everything (blog, manual, and Grafana)
+./deploy.sh all
+
+# Deploy individual components
+./deploy.sh blog       # Deploy public blog only
+./deploy.sh manual     # Deploy house manual only
+./deploy.sh grafana    # Deploy Grafana dashboards only
+```
+
+**Configuration:**
+Set the `LINODE_HOST` environment variable or edit `deploy.sh`:
+```bash
+export LINODE_HOST=nate@173.230.155.31
+```
+
+**Remote Server Layout:**
+The Linode server organizes services into separate directories:
+- **Weather/Grafana**: `~/weather-logger/` - Contains weather logger code, Grafana provisioning, and data
+  - Local: `grafana/provisioning/` → Remote: `~/weather-logger/grafana/provisioning/`
+  - Grafana container name: `weather-grafana` (runs standalone via docker run, not docker-compose)
+- **Hugo Sites**: `~/projects/linode/` - Contains Hugo static sites
+  - Public blog: `~/projects/linode/public-blog/`
+  - House manual: `~/projects/linode/public-house-manual/`
+
+**Manual Deployment (if needed):**
+```bash
+# Deploy Grafana dashboards manually
+rsync -avz grafana/provisioning/dashboards/ nate@173.230.155.31:~/weather-logger/grafana/provisioning/dashboards/
+ssh nate@173.230.155.31 "docker restart weather-grafana"
+
+# Deploy Hugo blog manually
+rsync -avz ../blog-content/public/ nate@173.230.155.31:~/projects/linode/public-blog/
+ssh nate@173.230.155.31 "cd ~/projects/linode && docker compose restart static-site"
+
+# Deploy house manual manually
+rsync -avz ../house-manual-content/public/ nate@173.230.155.31:~/projects/linode/public-house-manual/
+ssh nate@173.230.155.31 "cd ~/projects/linode && docker compose restart house-manual"
+```
+
 ## Important Patterns
 
 ### Rate Limiting
