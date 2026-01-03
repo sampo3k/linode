@@ -521,9 +521,9 @@
       "targets": [
         {
           "datasource": "Weather SQLite",
-          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, temp_outdoor as 'Outdoor', temp_indoor as 'Indoor', dew_point as 'Dew Point' FROM weather_measurements ORDER BY time",
+          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, temp_outdoor as 'Outdoor', temp_indoor as 'Indoor', dew_point as 'Dew Point' FROM weather_measurements WHERE timestamp >= datetime($__from/1000, 'unixepoch', 'localtime') AND timestamp < datetime($__to/1000, 'unixepoch', 'localtime') ORDER BY time",
           "queryType": "table",
-          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, temp_outdoor as 'Outdoor', temp_indoor as 'Indoor', dew_point as 'Dew Point' FROM weather_measurements ORDER BY time",
+          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, temp_outdoor as 'Outdoor', temp_indoor as 'Indoor', dew_point as 'Dew Point' FROM weather_measurements WHERE timestamp >= datetime($__from/1000, 'unixepoch', 'localtime') AND timestamp < datetime($__to/1000, 'unixepoch', 'localtime') ORDER BY time",
           "refId": "A",
           "timeColumns": [
             "time"
@@ -617,9 +617,9 @@
       "targets": [
         {
           "datasource": "Weather SQLite",
-          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, humidity_outdoor as 'Outdoor', humidity_indoor as 'Indoor' FROM weather_measurements ORDER BY time",
+          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, humidity_outdoor as 'Outdoor', humidity_indoor as 'Indoor' FROM weather_measurements WHERE timestamp >= datetime($__from/1000, 'unixepoch', 'localtime') AND timestamp < datetime($__to/1000, 'unixepoch', 'localtime') ORDER BY time",
           "queryType": "table",
-          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, humidity_outdoor as 'Outdoor', humidity_indoor as 'Indoor' FROM weather_measurements ORDER BY time",
+          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, humidity_outdoor as 'Outdoor', humidity_indoor as 'Indoor' FROM weather_measurements WHERE timestamp >= datetime($__from/1000, 'unixepoch', 'localtime') AND timestamp < datetime($__to/1000, 'unixepoch', 'localtime') ORDER BY time",
           "refId": "A",
           "timeColumns": [
             "time"
@@ -711,9 +711,9 @@
       "targets": [
         {
           "datasource": "Weather SQLite",
-          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, pressure_relative as 'Relative', pressure_absolute as 'Absolute' FROM weather_measurements ORDER BY time",
+          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, pressure_relative as 'Relative', pressure_absolute as 'Absolute' FROM weather_measurements WHERE timestamp >= datetime($__from/1000, 'unixepoch', 'localtime') AND timestamp < datetime($__to/1000, 'unixepoch', 'localtime') ORDER BY time",
           "queryType": "table",
-          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, pressure_relative as 'Relative', pressure_absolute as 'Absolute' FROM weather_measurements ORDER BY time",
+          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, pressure_relative as 'Relative', pressure_absolute as 'Absolute' FROM weather_measurements WHERE timestamp >= datetime($__from/1000, 'unixepoch', 'localtime') AND timestamp < datetime($__to/1000, 'unixepoch', 'localtime') ORDER BY time",
           "refId": "A",
           "timeColumns": [
             "time"
@@ -884,9 +884,9 @@
       "targets": [
         {
           "datasource": "Weather SQLite",
-          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, daily_rain as 'Daily Total', weekly_rain as 'Weekly Total', monthly_rain as 'Monthly Total' FROM weather_measurements ORDER BY time",
+          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, daily_rain as 'Daily Total', weekly_rain as 'Weekly Total', monthly_rain as 'Monthly Total' FROM weather_measurements WHERE timestamp >= datetime($__from/1000, 'unixepoch', 'localtime') AND timestamp < datetime($__to/1000, 'unixepoch', 'localtime') ORDER BY time",
           "queryType": "table",
-          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, daily_rain as 'Daily Total', weekly_rain as 'Weekly Total', monthly_rain as 'Monthly Total' FROM weather_measurements ORDER BY time",
+          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, daily_rain as 'Daily Total', weekly_rain as 'Weekly Total', monthly_rain as 'Monthly Total' FROM weather_measurements WHERE timestamp >= datetime($__from/1000, 'unixepoch', 'localtime') AND timestamp < datetime($__to/1000, 'unixepoch', 'localtime') ORDER BY time",
           "refId": "A",
           "timeColumns": [
             "time"
@@ -1034,9 +1034,9 @@
       "targets": [
         {
           "datasource": "Weather SQLite",
-          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, wind_speed as 'Wind Speed (mph)', wind_gust as 'Wind Gust (mph)' FROM weather_measurements ORDER BY time",
+          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, wind_speed as 'Wind Speed (mph)', wind_gust as 'Wind Gust (mph)' FROM weather_measurements WHERE timestamp >= datetime($__from/1000, 'unixepoch', 'localtime') AND timestamp < datetime($__to/1000, 'unixepoch', 'localtime') ORDER BY time",
           "queryType": "table",
-          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, wind_speed as 'Wind Speed (mph)', wind_gust as 'Wind Gust (mph)' FROM weather_measurements ORDER BY time",
+          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, wind_speed as 'Wind Speed (mph)', wind_gust as 'Wind Gust (mph)' FROM weather_measurements WHERE timestamp >= datetime($__from/1000, 'unixepoch', 'localtime') AND timestamp < datetime($__to/1000, 'unixepoch', 'localtime') ORDER BY time",
           "refId": "A",
           "timeColumns": [
             "time"
@@ -1172,9 +1172,9 @@
       "targets": [
         {
           "datasource": "Weather SQLite",
-          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, solar_radiation as 'Solar Radiation (W/m\u00b2)', uv_index as 'UV Index' FROM weather_measurements ORDER BY time",
+          "queryText": "SELECT strftime('%s', timestamp, 'utc') as time, solar_radiation as 'Solar Radiation (W/m\u00b2)', uv_index as 'UV Index' FROM weather_measurements WHERE timestamp >= datetime($__from/1000, 'unixepoch', 'localtime') AND timestamp < datetime($__to/1000, 'unixepoch', 'localtime') ORDER BY time",
           "queryType": "table",
-          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, solar_radiation as 'Solar Radiation (W/m\u00b2)', uv_index as 'UV Index' FROM weather_measurements ORDER BY time",
+          "rawQueryText": "SELECT strftime('%s', timestamp, 'utc') as time, solar_radiation as 'Solar Radiation (W/m\u00b2)', uv_index as 'UV Index' FROM weather_measurements WHERE timestamp >= datetime($__from/1000, 'unixepoch', 'localtime') AND timestamp < datetime($__to/1000, 'unixepoch', 'localtime') ORDER BY time",
           "refId": "A",
           "timeColumns": [
             "time"
