@@ -4,6 +4,7 @@ Data models for Weather Logger.
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, Optional
+import time
 
 
 @dataclass
@@ -14,8 +15,8 @@ class WeatherMeasurement:
     All sensor fields are optional as not all weather stations have all sensors.
     """
 
-    # Timestamp of the measurement
-    timestamp: datetime
+    # Timestamp of the measurement (Unix epoch seconds)
+    timestamp: int
 
     # Temperature fields (Fahrenheit)
     temp_outdoor: Optional[float] = None
@@ -67,9 +68,11 @@ class WeatherMeasurement:
         # Parse timestamp (API returns milliseconds since epoch)
         timestamp_ms = data.get("dateutc", data.get("date"))
         if timestamp_ms:
-            timestamp = datetime.fromtimestamp(timestamp_ms / 1000)
+            # Convert milliseconds to seconds
+            timestamp = int(timestamp_ms // 1000)
         else:
-            timestamp = datetime.now()
+            # Current Unix epoch seconds
+            timestamp = int(time.time())
 
         return cls(
             timestamp=timestamp,
@@ -111,7 +114,7 @@ class WeatherMeasurement:
             Dictionary representation
         """
         return {
-            "timestamp": self.timestamp.isoformat(),
+            "timestamp": self.timestamp,
             "temp_outdoor": self.temp_outdoor,
             "temp_indoor": self.temp_indoor,
             "feels_like": self.feels_like,
@@ -137,9 +140,11 @@ class WeatherMeasurement:
 
     def __repr__(self) -> str:
         """String representation for debugging."""
+        # Convert epoch to human-readable format for debugging
+        timestamp_iso = datetime.fromtimestamp(self.timestamp).isoformat()
         return (
             f"WeatherMeasurement("
-            f"timestamp={self.timestamp.isoformat()}, "
+            f"timestamp={self.timestamp} ({timestamp_iso}), "
             f"temp_outdoor={self.temp_outdoor}, "
             f"humidity={self.humidity_outdoor}, "
             f"mac={self.mac_address})"

@@ -23,7 +23,7 @@ class TestWeatherDatabase:
     def sample_measurement(self):
         """Create a sample weather measurement."""
         return WeatherMeasurement(
-            timestamp=datetime(2024, 1, 1, 12, 0, 0),
+            timestamp=1704110400,  # 2024-01-01 12:00:00 UTC
             temp_outdoor=72.5,
             temp_indoor=70.0,
             humidity_outdoor=50,
@@ -106,17 +106,17 @@ class TestWeatherDatabase:
         """Test querying measurements with time range."""
         # Insert measurements at different times
         m1 = WeatherMeasurement(
-            timestamp=datetime(2024, 1, 1, 12, 0, 0),
+            timestamp=1704110400,  # 2024-01-01 12:00:00 UTC
             temp_outdoor=70.0,
             mac_address="AA:BB:CC:DD:EE:FF"
         )
         m2 = WeatherMeasurement(
-            timestamp=datetime(2024, 1, 1, 13, 0, 0),
+            timestamp=1704114000,  # 2024-01-01 13:00:00 UTC
             temp_outdoor=75.0,
             mac_address="AA:BB:CC:DD:EE:FF"
         )
         m3 = WeatherMeasurement(
-            timestamp=datetime(2024, 1, 1, 14, 0, 0),
+            timestamp=1704117600,  # 2024-01-01 14:00:00 UTC
             temp_outdoor=80.0,
             mac_address="AA:BB:CC:DD:EE:FF"
         )
@@ -128,8 +128,8 @@ class TestWeatherDatabase:
         # Query with time range
         measurements = db.get_measurements(
             "AA:BB:CC:DD:EE:FF",
-            start_time=datetime(2024, 1, 1, 12, 30, 0),
-            end_time=datetime(2024, 1, 1, 14, 30, 0)
+            start_time=1704112200,  # 2024-01-01 12:30:00 UTC
+            end_time=1704119400     # 2024-01-01 14:30:00 UTC
         )
 
         # Should only get m2 and m3
@@ -141,7 +141,7 @@ class TestWeatherDatabase:
         """Test batch inserting measurements."""
         measurements = [
             WeatherMeasurement(
-                timestamp=datetime(2024, 1, 1, 12, i, 0),
+                timestamp=1704110400 + (i * 60),  # 2024-01-01 12:00:00 UTC + i minutes
                 temp_outdoor=70.0 + i,
                 mac_address="AA:BB:CC:DD:EE:FF"
             )
@@ -160,12 +160,12 @@ class TestWeatherDatabase:
         """Test getting record count filtered by MAC address."""
         # Insert measurements for two different devices
         m1 = WeatherMeasurement(
-            timestamp=datetime(2024, 1, 1, 12, 0, 0),
+            timestamp=1704110400,  # 2024-01-01 12:00:00 UTC
             temp_outdoor=70.0,
             mac_address="AA:BB:CC:DD:EE:FF"
         )
         m2 = WeatherMeasurement(
-            timestamp=datetime(2024, 1, 1, 12, 0, 0),
+            timestamp=1704110400,  # 2024-01-01 12:00:00 UTC
             temp_outdoor=75.0,
             mac_address="11:22:33:44:55:66"
         )

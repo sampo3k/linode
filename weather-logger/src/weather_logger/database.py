@@ -62,7 +62,7 @@ class WeatherDatabase:
             conn.execute("PRAGMA synchronous=NORMAL")
             conn.execute("PRAGMA foreign_keys=ON")
 
-            # Return datetime objects for DATETIME columns
+            # Use Row factory for dict-like access
             conn.row_factory = sqlite3.Row
 
             yield conn
@@ -91,8 +91,8 @@ class WeatherDatabase:
                 CREATE TABLE IF NOT EXISTS weather_measurements (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-                    -- Timestamp (indexed for time-series queries)
-                    timestamp DATETIME NOT NULL,
+                    -- Timestamp (Unix epoch seconds, indexed for time-series queries)
+                    timestamp INTEGER NOT NULL,
 
                     -- Temperature (Fahrenheit)
                     temp_outdoor REAL,
@@ -320,7 +320,7 @@ class WeatherDatabase:
                 logger.error(f"Error in batch insert: {e}")
                 raise DatabaseError(f"Batch insert failed: {e}")
 
-    def get_latest_timestamp(self, mac_address: str) -> Optional[datetime]:
+    def get_latest_timestamp(self, mac_address: str) -> Optional[int]:
         """
         Get the timestamp of the most recent measurement for a device.
 
@@ -328,7 +328,7 @@ class WeatherDatabase:
             mac_address: Device MAC address
 
         Returns:
-            Datetime of latest measurement or None if no data
+            Unix epoch seconds of latest measurement or None if no data
 
         Raises:
             DatabaseError: If query fails
@@ -346,7 +346,7 @@ class WeatherDatabase:
                 row = cursor.fetchone()
 
                 if row and row['latest_timestamp']:
-                    return datetime.fromisoformat(row['latest_timestamp'])
+                    return row['latest_timestamp']
                 else:
                     return None
 
@@ -357,8 +357,8 @@ class WeatherDatabase:
     def get_measurements(
         self,
         mac_address: str,
-        start_time: Optional[datetime] = None,
-        end_time: Optional[datetime] = None,
+        start_time: Optional[int] = None,
+        end_time: Optional[int] = None,
         limit: Optional[int] = None
     ) -> List[WeatherMeasurement]:
         """
@@ -366,8 +366,8 @@ class WeatherDatabase:
 
         Args:
             mac_address: Device MAC address
-            start_time: Start of time range (optional)
-            end_time: End of time range (optional)
+            start_time: Start of time range as Unix epoch seconds (optional)
+            end_time: End of time range as Unix epoch seconds (optional)
             limit: Maximum number of records to return (optional)
 
         Returns:
@@ -408,7 +408,7 @@ class WeatherDatabase:
                 measurements = []
                 for row in rows:
                     measurement = WeatherMeasurement(
-                        timestamp=datetime.fromisoformat(row['timestamp']),
+                        timestamp=row['timestamp'],
                         temp_outdoor=row['temp_outdoor'],
                         temp_indoor=row['temp_indoor'],
                         feels_like=row['feels_like'],
