@@ -124,10 +124,12 @@ def migrate_to_epoch(db_path: str, dry_run: bool = False) -> bool:
             """)
 
             # Step 2: Convert all timestamps to Unix epoch seconds
-            logger.info(f"Converting {record_count} timestamps to Unix epoch seconds...")
+            # Note: Original timestamps are in local time (Pacific = UTC-8)
+            # Add 8 hours to convert Pacific time strings to UTC before converting to epoch
+            logger.info(f"Converting {record_count} timestamps to Unix epoch seconds (Pacific → UTC)...")
             cursor.execute("""
                 UPDATE weather_measurements
-                SET timestamp_epoch = CAST(strftime('%s', timestamp) AS INTEGER)
+                SET timestamp_epoch = CAST(strftime('%s', datetime(timestamp, '+8 hours')) AS INTEGER)
             """)
 
             # Step 3: Verify no NULL values
